@@ -721,4 +721,14 @@ config GOLDFISH_TIMER
 	help
 	  Support for the timer/counter of goldfish-rtc
 
+config ALTERA_TIMER
+	bool "Stand-alone (non-Nios) Altera interval timer driver"
+	depends on !NIOS2
+	select TIMER_OF
+
+config CLKSRC_TALLER
+	bool "Taller CYCLECNT clock source"
+	depends on GENERIC_SCHED_CLOCK
+	default y if ARM && ARCH_TALLER
+
 endmenu
