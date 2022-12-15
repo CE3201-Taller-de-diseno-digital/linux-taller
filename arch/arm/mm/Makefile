@@ -78,6 +78,7 @@ AFLAGS_tlb-v7.o		:=-Wa,-march=armv7-a
 obj-$(CONFIG_CPU_ARM7TDMI)	+= proc-arm7tdmi.o
 obj-$(CONFIG_CPU_ARM720T)	+= proc-arm720.o
 obj-$(CONFIG_CPU_ARM740T)	+= proc-arm740.o
+obj-$(CONFIG_CPU_ARM810)	+= proc-arm810.o
 obj-$(CONFIG_CPU_ARM9TDMI)	+= proc-arm9tdmi.o
 obj-$(CONFIG_CPU_ARM920T)	+= proc-arm920.o
 obj-$(CONFIG_CPU_ARM922T)	+= proc-arm922.o

@@ -19,7 +19,7 @@
 /*
  * The total size of the data cache.
  */
-#if defined(CONFIG_CPU_SA110)
+#if defined(CONFIG_CPU_SA110) || defined(CONFIG_CPU_ARM810)
 # define CACHE_DSIZE	16384
 #elif defined(CONFIG_CPU_SA1100)
 # define CACHE_DSIZE	8192

@@ -6,7 +6,7 @@
 #include <linux/prefetch.h>
 #include <asm/barrier.h>
 
-#if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110)
+#if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110) || defined(CONFIG_CPU_ARM810)
 /*
  * On the StrongARM, "swp" is terminally broken since it bypasses the
  * cache totally.  This means that the cache becomes inconsistent, and,

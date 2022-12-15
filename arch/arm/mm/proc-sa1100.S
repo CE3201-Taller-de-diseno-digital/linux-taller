@@ -21,7 +21,7 @@
 #include <asm/assembler.h>
 #include <asm/asm-offsets.h>
 #include <asm/hwcap.h>
-#include <mach/hardware.h>
+//#include <mach/hardware.h>
 #include <asm/pgtable-hwdef.h>
 
 #include "proc-macros.S"
@@ -236,6 +236,7 @@ sa1100_crval:
 	string	cpu_elf_name, "v4"
 	string	cpu_sa1100_name, "StrongARM-1100"
 	string	cpu_sa1110_name, "StrongARM-1110"
+	string	cpu_arm810_name, "ARM810"
 
 	.align
 
@@ -268,3 +269,4 @@ __\name\()_proc_info:
 
 	sa1100_proc_info sa1100, 0x4401a110, 0xfffffff0, cpu_sa1100_name
 	sa1100_proc_info sa1110, 0x6901b110, 0xfffffff0, cpu_sa1110_name
+	sa1100_proc_info arm810, 0x41018100, 0xfffffff0, cpu_arm810_name

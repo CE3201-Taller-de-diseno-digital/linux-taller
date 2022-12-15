@@ -168,6 +168,18 @@ config CPU_FA526
 	  Say Y if you want support for the FA526 processor.
 	  Otherwise, say N.
 
+config CPU_ARM810
+	bool
+	select CPU_32v4
+	select CPU_ABRT_EV4
+	select CPU_CACHE_NOP
+	#select CPU_CACHE_V4WB
+	select CPU_CACHE_VIPT
+	select CPU_COPY_V4WB if MMU
+	select CPU_CP15_MMU
+	select CPU_PABRT_LEGACY
+	select CPU_TLB_V4WBI if MMU
+
 # ARM940T
 config CPU_ARM940T
 	bool

@@ -37,6 +37,7 @@ EXPORT_SYMBOL(arm_heavy_mb);
 
 static void flush_pfn_alias(unsigned long pfn, unsigned long vaddr)
 {
+#if __LINUX_ARM_ARCH__ >= 5
 	unsigned long to = FLUSH_ALIAS_START + (CACHE_COLOUR(vaddr) << PAGE_SHIFT);
 	const int zero = 0;
 
@@ -47,6 +48,11 @@ static void flush_pfn_alias(unsigned long pfn, unsigned long vaddr)
 	    :
 	    : "r" (to), "r" (to + PAGE_SIZE - 1), "r" (zero)
 	    : "cc");
+
+	//XXX: Inaceptable
+#elif !defined(CONFIG_ARCH_TALLER)
+	BUG_ON(!cache_is_vipt_nonaliasing());
+#endif
 }
 
 static void flush_icache_alias(unsigned long pfn, unsigned long vaddr, unsigned long len)
