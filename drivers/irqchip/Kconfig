@@ -680,4 +680,11 @@ config SUNPLUS_SP7021_INTC
 	  chained controller, routing all interrupt source in P-Chip to
 	  the primary controller on C-Chip.
 
+config TALLER_INTC
+	bool "CE3201 interrupt controller"
+	depends on ARM && ARCH_TALLER
+	default y if ARCH_TALLER
+	select IRQ_DOMAIN
+	select GENERIC_IRQ_CHIP
+
 endmenu
