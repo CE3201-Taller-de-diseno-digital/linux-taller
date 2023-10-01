@@ -389,7 +389,7 @@ ALT_UP_B(.L0_\@)
 	.else
 	ALT_SMP(W(dmb)	ish)
 	.endif
-#elif __LINUX_ARM_ARCH__ == 6
+#elif __LINUX_ARM_ARCH__ == 6 || defined(CONFIG_CPU_ARM810)
 	ALT_SMP(mcr	p15, 0, r0, c7, c10, 5)	@ dmb
 #else
 #error Incompatible SMP platform

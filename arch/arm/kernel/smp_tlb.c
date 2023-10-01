@@ -170,7 +170,9 @@ static void broadcast_tlb_mm_a15_erratum(struct mm_struct *mm)
 		return;
 
 	this_cpu = get_cpu();
+#ifndef CONFIG_CPU_ARM810
 	a15_erratum_get_cpumask(this_cpu, mm, &mask);
+#endif
 	smp_call_function_many(&mask, ipi_flush_tlb_a15_erratum, NULL, 1);
 	put_cpu();
 }

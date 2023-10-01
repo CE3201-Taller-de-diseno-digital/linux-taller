@@ -409,7 +409,12 @@ ENTRY(secondary_startup)
 	 */
 	adr_l	r3, secondary_data
 	mov_l	r12, __secondary_switched
+#ifdef CONFIG_CPU_ARM810
+	ldr	r4, [r3, #0]
+	ldr	r5, [r3, #4]
+#else
 	ldrd	r4, r5, [r3, #0]		@ get secondary_data.pgdir
+#endif
 ARM_BE8(eor	r4, r4, r5)			@ Swap r5 and r4 in BE:
 ARM_BE8(eor	r5, r4, r5)			@ it can be done in 3 steps
 ARM_BE8(eor	r4, r4, r5)			@ without using a temp reg.

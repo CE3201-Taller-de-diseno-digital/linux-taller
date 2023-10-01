@@ -25,7 +25,7 @@
 #define arch_atomic_read(v)	READ_ONCE((v)->counter)
 #define arch_atomic_set(v,i)	WRITE_ONCE(((v)->counter), (i))
 
-#if __LINUX_ARM_ARCH__ >= 6
+#if __LINUX_ARM_ARCH__ >= 6 || defined(CONFIG_CPU_ARM810)
 
 /*
  * ARMv6 UP and SMP safe atomic ops.  We use load exclusive and

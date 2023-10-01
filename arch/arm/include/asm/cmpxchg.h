@@ -6,7 +6,7 @@
 #include <linux/prefetch.h>
 #include <asm/barrier.h>
 
-#if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110) || defined(CONFIG_CPU_ARM810)
+#if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110)
 /*
  * On the StrongARM, "swp" is terminally broken since it bypasses the
  * cache totally.  This means that the cache becomes inconsistent, and,
@@ -32,15 +32,15 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
 #ifdef swp_is_buggy
 	unsigned long flags;
 #endif
-#if __LINUX_ARM_ARCH__ >= 6
+#if __LINUX_ARM_ARCH__ >= 6 || defined(CONFIG_CPU_ARM810)
 	unsigned int tmp;
 #endif
 
 	prefetchw((const void *)ptr);
 
 	switch (size) {
-#if __LINUX_ARM_ARCH__ >= 6
-#ifndef CONFIG_CPU_V6 /* MIN ARCH >= V6K */
+#if __LINUX_ARM_ARCH__ >= 6 || defined(CONFIG_CPU_ARM810)
+#if !defined(CONFIG_CPU_V6) && !defined(CONFIG_CPU_ARM810) /* MIN ARCH >= V6K */
 	case 1:
 		asm volatile("@	__xchg1\n"
 		"1:	ldrexb	%0, [%3]\n"
@@ -121,7 +121,7 @@ static inline unsigned long __xchg(unsigned long x, volatile void *ptr, int size
 
 #include <asm-generic/cmpxchg-local.h>
 
-#if __LINUX_ARM_ARCH__ < 6
+#if __LINUX_ARM_ARCH__ < 6 && !defined(CONFIG_CPU_ARM810)
 /* min ARCH < ARMv6 */
 
 #ifdef CONFIG_SMP
@@ -161,7 +161,7 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
 	prefetchw((const void *)ptr);
 
 	switch (size) {
-#ifndef CONFIG_CPU_V6	/* min ARCH >= ARMv6K */
+#if !defined(CONFIG_CPU_V6) && !defined(CONFIG_CPU_ARM810)	/* min ARCH >= ARMv6K */
 	case 1:
 		do {
 			asm volatile("@ __cmpxchg1\n"
@@ -251,11 +251,25 @@ static inline unsigned long long __cmpxchg64(unsigned long long *ptr,
 	prefetchw(ptr);
 
 	__asm__ __volatile__(
+#ifdef CONFIG_CPU_ARM810
+"1:	ldrex		%1, [%3]\n"
+"	add		%3, %3, %4\n"
+"	ldrex		%H1, [%3]\n"
+"	sub		%3, %3, %4\n"
+#else
 "1:	ldrexd		%1, %H1, [%3]\n"
+#endif
 "	teq		%1, %4\n"
 "	teqeq		%H1, %H4\n"
 "	bne		2f\n"
+#ifdef CONFIG_CPU_ARM810
+"	strex		%0, %5, [%3]\n"
+"	add	%3, %3, %4\n"
+"	strex		%0, %H5, [%3]\n"
+"	sub	%3, %3, %4\n"
+#else
 "	strexd		%0, %5, %H5, [%3]\n"
+#endif
 "	teq		%0, #0\n"
 "	bne		1b\n"
 "2:"

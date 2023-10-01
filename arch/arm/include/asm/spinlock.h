@@ -2,7 +2,7 @@
 #ifndef __ASM_SPINLOCK_H
 #define __ASM_SPINLOCK_H
 
-#if __LINUX_ARM_ARCH__ < 6
+#if __LINUX_ARM_ARCH__ < 6 && !defined(CONFIG_CPU_ARM810)
 #error SMP not supported on pre-ARMv6 CPUs
 #endif
 
@@ -32,11 +32,17 @@
 						\
 	"nop.w"					\
 )
+#elif defined(CONFIG_CPU_ARM810)
+#define WFE(cond)	__ALT_SMP_ASM("nop", "nop")
 #else
 #define WFE(cond)	__ALT_SMP_ASM("wfe" cond, "nop")
 #endif
 
+#ifdef CONFIG_CPU_ARM810
+#define SEV		__ALT_SMP_ASM(WASM(nop), WASM(nop))
+#else
 #define SEV		__ALT_SMP_ASM(WASM(sev), WASM(nop))
+#endif
 
 static inline void dsb_sev(void)
 {
