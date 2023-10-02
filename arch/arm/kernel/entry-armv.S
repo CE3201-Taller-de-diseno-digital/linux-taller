@@ -916,27 +916,24 @@ __kuser_cmpxchg64:				@ 0xffff0f60
 #ifdef CONFIG_CPU_ARM810
 	ldmia	r0, {r4, r5}
 	ldmia	r1, {r6, r7}
+
+	add		r1, r2, #4				@ (-1 insn)
+
+1:	ldrex	r0, [r2]
+	eors	r3, r0, r4			@ compare with oldval (1)
+	ldrex	r0, [r1]
+	eorseq	r3, r0, r5			@ compare with oldval (2)
+	strexeq	r3, r6, [r2]
+	strexeq	r3, r7, [r1]
 #else
 	ldrd	r4, r5, [r0]			@ load old val
 	ldrd	r6, r7, [r1]			@ load new val
-#endif
-#ifdef CONFIG_CPU_ARM810
-1:	ldrex	r0, [r2]
-	add	r2, r2, #4
-	ldrex	r1, [r2]
-	sub	r2, r2, #4
-#else
+
 	smp_dmb	arm
 1:	ldrexd	r0, r1, [r2]			@ load current val
-#endif
 	eors	r3, r0, r4			@ compare with oldval (1)
 	eorseq	r3, r1, r5			@ compare with oldval (2)
-#ifdef CONFIG_CPU_ARM810
-	strexeq	r3, r6, [r2]
-	addeq	r2, r2, #4
-	strexeq	r3, r7, [r2]
-	subeq	r2, r2, #4
-#else
+	
 	strexdeq r3, r6, r7, [r2]		@ store newval if eq
 #endif
 	teqeq	r3, #1				@ success?
